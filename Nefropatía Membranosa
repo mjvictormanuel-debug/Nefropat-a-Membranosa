@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Presentación Final: Nefropatía Membranosa</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@400;600&display=swap);
+
+      :root {
+        --primary-color: #1a2a47;
+        --secondary-color: #2772a8;
+        --accent-color: #d35400;
+        --highlight-color: #2980b9;
+        --success-color: #27ae60;
+        --background-color: #f4f7f6;
+        --text-color: #34495e;
+        --card-bg: #ffffff;
+        --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        --sidebar-width: 300px
+      }
+
+      * {
+        box-sizing: border-box
+      }
+
+      body {
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.7;
+        overflow: hidden
+      }
+
+      .container {
+        display: flex;
+        height: 100vh
+      }
+
+      #menu-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 101;
+        background: var(--primary-color);
+        color: #fff;
+        border: 2px solid var(--secondary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all .3s ease
+      }
+
+      #menu-toggle:hover {
+        transform: scale(1.1);
+        background: var(--secondary-color)
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        background-color: var(--primary-color);
+        color: #fff;
+        flex-shrink: 0;
+        padding: 25px;
+        border-right: 4px solid var(--secondary-color);
+        transition: transform .3s ease-in-out;
+        z-index: 100;
+        position: fixed;
+        height: 100%;
+        transform: translateX(-100%);
+        overflow-y: auto
+      }
+
+      .sidebar.is-open {
+        transform: translateX(0)
+      }
+
+      .sidebar h1 {
+        color: #fff;
+        font-family: Roboto, sans-serif;
+        font-size: 1.8em;
+        text-align: center;
+        margin-bottom: 25px;
+        border-bottom: 1px solid var(--secondary-color);
+        padding-bottom: 15px
+      }
+
+      .sidebar nav ul {
+        list-style-type: none;
+        padding: 0
+      }
+
+      .sidebar nav ul li a {
+        cursor: pointer;
+        color: #bdc3c7;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 12px 18px;
+        border-radius: 5px;
+        transition: background-color .3s, color .3s;
+        margin-bottom: 5px;
+        white-space: nowrap
+      }
+
+      .sidebar nav ul li a .icon {
+        font-size: 1.5em;
+        margin-right: 20px;
+        min-width: 24px;
+        text-align: center
+      }
+
+      .sidebar nav ul li a.active,
+      .sidebar nav ul li a:hover {
+        background-color: var(--secondary-color);
+        color: #fff
+      }
+
+      .main-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        width: 100%;
+        transition: filter .3s ease-in-out
+      }
+
+      body.sidebar-is-open .main-content {
+        filter: brightness(.5)
+      }
+
+      .view-section {
+        display: none;
+        animation: fadeIn .5s ease-in-out
+      }
+
+      .content-card {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        border-left: 6px solid var(--secondary-color);
+        padding: 35px;
+        margin: 40px
+      }
+
+      #portada-container {
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #fff;
+        background-image: linear-gradient(rgba(26, 42, 71, .6), rgba(26, 42, 71, .6)), url(https://images.unsplash.com/photo-1584985222066-996b1b533b35?auto=format&fit=crop&q=80);
+        background-size: cover;
+        background-position: center
+      }
+
+      .view-section.is-visible {
+        display: block
+      }
+
+      #portada-container.is-visible {
+        display: flex
+      }
+
+      #portada-container .cover-title {
+        font-family: Roboto, sans-serif;
+        font-size: 4.5em;
+        margin: 0;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, .5)
+      }
+
+      #portada-container .cover-author {
+        font-size: 1.2em;
+        margin-top: 20px;
+        letter-spacing: 2px;
+        position: absolute;
+        bottom: 40px
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0
+        }
+
+        to {
+          opacity: 1
+        }
+      }
+
+      .slide-section h2 {
+        font-family: Roboto, sans-serif;
+        color: var(--primary-color);
+        font-size: 2.2em;
+        margin-top: 0;
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 15px;
+        margin-bottom: 25px
+      }
+
+      ul {
+        list-style-type: none;
+        padding-left: 0
+      }
+
+      ul li {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 15px
+      }
+
+      ul li::before {
+        content: '➤';
+        position: absolute;
+        left: 0;
+        color: var(--secondary-color);
+        font-weight: 700;
+        font-size: 1.2em
+      }
+
+      .highlight {
+        color: var(--highlight-color);
+        font-weight: 600
+      }
+
+      .danger-highlight {
+        color: var(--accent-color);
+        font-weight: 700
+      }
+
+      .success-highlight {
+        color: var(--success-color);
+        font-weight: 700
+      }
+
+      .content-with-image {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        align-items: center
+      }
+
+      .image-placeholder img {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        box-shadow: var(--shadow)
+      }
+
+      .image-caption {
+        text-align: center;
+        font-size: .9em;
+        color: #7f8c8d
+      }
+
+      .info-box {
+        background-color: #e8f4fd;
+        border-left: 5px solid var(--highlight-color);
+        padding: 20px;
+        margin-top: 25px;
+        border-radius: 5px
+      }
+
+      .info-box h4 {
+        margin-top: 0;
+        color: var(--primary-color)
+      }
+
+      .treatment-schema {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 20px
+      }
+
+      .risk-level {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px
+      }
+
+      .risk-low {
+        background-color: #eafaf1;
+        border-left: 5px solid var(--success-color)
+      }
+
+      .risk-moderate {
+        background-color: #fef9e7;
+        border-left: 5px solid #f1c40f
+      }
+
+      .risk-high {
+        background-color: #fdebd0;
+        border-left: 5px solid var(--accent-color)
+      }
+
+      .risk-level h4 {
+        margin-top: 0
+      }
+
+      @media (max-width:1200px) {
+        .content-with-image {
+          grid-template-columns: 1fr
+        }
+      }
+
+      @media (max-width:900px) {
+        body {
+          overflow: auto
+        }
+
+        .container {
+          flex-direction: column;
+          height: auto
+        }
+
+        .main-content {
+          margin-left: 0;
+          overflow-y: visible;
+          padding: 20px
+        }
+
+        #portada-container .cover-title {
+          font-size: 2.5em
+        }
+
+        .sidebar {
+          z-index: 1000
+        }
+      }
+     /* Estilos para el Diagrama de Flujo (Fisiopatología) */
+        .flowchart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Espacio entre los elementos del flujo */
+            padding: 20px 0;
+        }
+
+        .flowchart-step-box {
+            background-color: var(--card-bg);
+            border: 2px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px; /* Ancho máximo para las cajas de paso */
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .flowchart-step-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .flowchart-arrow-down {
+            font-size: 2.5em; /* Tamaño de la flecha */
+            color: var(--primary-color);
+            font-weight: bold;
+            line-height: 0.8; /* Ajuste para centrar visualmente */
+        }
+
+        .flowchart-result-box {
+            background-color: var(--accent-color); /* Color naranja para el resultado final */
+            color: white;
+            border-radius: 8px;
+            padding: 18px 25px;
+            text-align: center;
+            width: 100%;
+            max-width: 350px;
+            font-weight: 700;
+            font-size: 1.1em;
+            box-shadow: var(--shadow);
+            transform: scale(1.05); /* Ligeramente más grande para destacar */
+        }
+
+        @media (max-width: 1200px) {
+            .flowchart-step-box, .flowchart-result-box {
+                max-width: 100%; /* Las cajas ocupan todo el ancho en pantallas pequeñas */
+            }
+        }
+    </style>
+  </head>
+  <body>
+    <button id="menu-toggle">☰</button>
+    <div class="container">
+      <aside class="sidebar">
+        <h1>Nefropatía Membranosa</h1>
+        <nav>
+          <ul>
+            <li>
+              <a data-target="#portada-container">
+                <span class="icon">🏠</span>
+                <span class="link-text">Inicio</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#intro">
+                <span class="icon">🔬</span>
+                <span class="link-text">Introducción</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#epidemiologia">
+                <span class="icon">📈</span>
+                <span class="link-text">Epidemiología</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#etiologia">
+                <span class="icon">📂</span>
+                <span class="link-text">Etiología</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#fisiopatologia">
+                <span class="icon">🧬</span>
+                <span class="link-text">Fisiopatología</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#histopatologia">
+                <span class="icon">🖼️</span>
+                <span class="link-text">Histopatología</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#clinica">
+                <span class="icon">🩺</span>
+                <span class="link-text">Cuadro Clínico</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#diagnostico">
+                <span class="icon">💡</span>
+                <span class="link-text">Diagnóstico</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#riesgo">
+                <span class="icon">⚖️</span>
+                <span class="link-text">Riesgo y Pronóstico</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#tratamiento">
+                <span class="icon">💊</span>
+                <span class="link-text">Tratamiento</span>
+              </a>
+            </li>
+            <li>
+              <a data-target="#trasplante">
+                <span class="icon">🔄</span>
+                <span class="link-text">Trasplante Renal</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+      <main class="main-content">
+        <div id="portada-container" class="view-section">
+          <h1 class="cover-title">Nefropatía Membranosa</h1>
+          <p class="cover-author">Meza Juárez Víctor Manuel</p>
+        </div>
+        <section id="intro" class="view-section">
+          <div class="content-card">
+            <h2>Introducción y Definición</h2>
+            <div class="content-with-image">
+              <div>
+                <ul>
+                  <li>
+                    <strong>Definición: </strong>Patrón de lesión renal con <span class="highlight">engrosamiento de la MBG</span> y depósitos inmunes subepiteliales.
+                  </li>
+                  <li>Es la causa más frecuente de <span class="highlight">Síndrome Nefrótico</span> en el adulto no diabético. </li>
+                </ul>
+              </div>
+              <div class="image-placeholder">
+                <img src="https://i.imgur.com/amfkFl9.png" alt="Glomerulo sano">
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="epidemiologia" class="view-section"><div class="content-card">
+                <h2>Epidemiología</h2>
+                <div style="width: 100%; max-width: 950px; margin: auto;">
+                    <canvas id="epidemiologyChart"></canvas>
+                </div>
+            </div></section>
+        <section id="etiologia" class="view-section">
+          <div class="content-card">
+            <h2>Etiología: Primaria vs. Secundaria</h2>
+            <h3>NM Primaria (~80%)</h3>
+            <ul>
+              <li>Anticuerpos ( <span class="highlight">IgG4</span>) contra: <span class="highlight">Anti-PLA2R</span> (principal), <span class="highlight">Anti-THSD7A</span>, etc. </li>
+            </ul>
+            <h3>NM Secundaria (~20%)</h3>
+            <ul>
+              <li>
+                <strong>Neoplasias:</strong> Pulmón, próstata, mama.
+              </li>
+              <li>
+                <strong>Autoinmunes:</strong> Lupus (LES, Clase V).
+              </li>
+              <li>
+                <strong>Infecciones:</strong> VHB, VHC, Sífilis.
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section id="fisiopatologia" class="view-section"><div class="content-card">
+                <h2>Fisiopatología: Cascada de la Lesión</h2>
+                <div class="content-with-image">
+                    <div class="flowchart-container">
+                        <div class="flowchart-step-box">1. Anti-PLA<sub>2</sub>R (<span class="highlight">IgG4</span>) vs <span class="highlight">PLA<sub>2</sub>R</span></div>
+                        <div class="flowchart-arrow-down">↓</div>
+                        <div class="flowchart-step-box">2. Formación de <span class="highlight">inmunocomplejos subepiteliales</span></div>
+                        <div class="flowchart-arrow-down">↓</div>
+                        <div class="flowchart-step-box">3. Activación del Complemento (<span class="danger-highlight">C5b-9</span>)</div>
+                        <div class="flowchart-arrow-down">↓</div>
+                        <div class="flowchart-step-box">4. Lesión del podocito</div>
+                        <div class="flowchart-arrow-down">↓</div>
+                        <div class="flowchart-result-box">PROTEINURIA MASIVA</div>
+                    </div>
+                    <div class="image-placeholder">
+                        <img src="https://i.imgur.com/NaLCOBw.jpeg" alt="Diagrama de la fisiopatología de la nefropatía membranosa, mostrando el papel central de los anticuerpos anti-PLA2R y los puntos de acción de los tratamientos farmacológicos.">
+                        <p class="image-caption">Esquema completo de la patogenia de la nefropatía membranosa, ilustrando desde los factores ambientales y genéticos hasta la activación inmune, la formación de complejos anti-PLA2R, el daño podocitario por complemento y la progresión a ERC, señalando los sitios de acción de diversos fármacos.</p>
+                        <p class="image-caption">Rojas-Rivera, J. E., & Arduán, A. O. (2021). Nefropatía membranosa primaria en la era de los autoanticuerpos y de las terapias biológicas. Medicina Clínica, 157(3), 121–129. https://doi.org/10.1016/j.medcli.2021.02.010</p>
+                    </div>
+                </div>
+            </div></section>
+        <section id="histopatologia" class="view-section">
+          <div class="content-card">
+            <h2>Histopatología: Hallazgos Clave</h2>
+            <div class="content-with-image"> <div class="image-placeholder">
+                <img src="https://i.imgur.com/lji7Lr6.jpeg" alt="Microscopía óptica mostrando engrosamiento de la membrana basal glomerular y espículas.">
+                <p class="image-caption">MO: Tinción de Plata muestra <span class="danger-highlight">"spikes"</span>.</p>
+              </div>
+              <div class="image-placeholder">
+                <img src="https://i.imgur.com/b7SzXuW.jpeg" alt="Microscopía electrónica con depósitos electrodensos subepiteliales.">
+                <p class="image-caption">MO: Muestra <span class="danger-highlight">depósitos subepiteliales</span>.</p>
+              </div>
+              <div class="image-placeholder">
+                <img src="https://i.imgur.com/qGmhSu1.jpeg" alt="Tinción de Inmunofluorescencia para IgG mostrando patrón granular en la MBG.">
+                <p class="image-caption">IF: Depósitos granulares de <span class="highlight">IgG</span>.</p>
+              </div>
+              <div class="image-placeholder">
+                <img src="https://i.imgur.com/NIChtz8.jpeg" alt="Microscopía electrónica de la etapa tardía con englobamiento de depósitos.">
+                <p class="image-caption">IH: Captación de inmunocomplejos.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="clinica" class="view-section">
+          <div class="content-card">
+            <h2>Cuadro Clínico</h2>
+            <ul>
+              <li>80% debuta con un <span class="danger-highlight">Síndrome Nefrótico completo</span>. </li>
+              <li>
+                <span class="highlight">Microhematuria</span> (50%).
+              </li>
+              <li>
+                <span class="danger-highlight">Alto riesgo de TROMBOEMBOLISMO</span>.
+              </li>
+            </ul>
+          </div>
+        </section>
+        <section id="diagnostico" class="view-section">
+          <div class="content-card">
+            <h2>Diagnóstico: Paradigma Actual</h2>
+            <div class="content-with-image">
+              <div>
+                <ul>
+                  <li>
+                    <strong>Paso 1: Serología.</strong> Medir <span class="highlight">anti-PLA2R</span>.
+                  </li>
+                  <li>
+                    <strong>Si anti-PLA2R es POSITIVO</strong> (+ FG normal) ➜ <span class="success-highlight">Dx SIN biopsia.</span>
+                  </li>
+                  <li>
+                    <strong>Paso 2: Biopsia Renal.</strong> Si <span class="highlight">anti-PLA2R es NEGATIVO</span>o hay <span class="danger-highlight">deterioro renal</span>.
+                  </li>
+                </ul>
+              </div>
+              <div class="image-placeholder">
+                <img src="https://i.imgur.com/gO3i8bM.png" alt="Serología positiva anti-PLA2R">
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="riesgo" class="view-section">
+          <div class="content-card">
+            <h2>Riesgo y Pronóstico</h2>
+            <div class="info-box">
+              <h4>La "Regla de los Tercios"</h4>
+              <p>Un tercio <span class="success-highlight">remite</span>, un tercio <span class="highlight">persiste</span>y un tercio <span class="danger-highlight">progresa a ERT</span>. </p>
+            </div>
+          </div>
+        </section>
+        <section id="tratamiento" class="view-section">
+          <div class="content-card">
+            <h2>Esquema Terapéutico</h2>
+            <div class="treatment-schema">
+              <h3>Abordaje Basado en el Riesgo (KDIGO)</h3>
+              <div class="risk-level risk-low">
+                <h4>Riesgo BAJO</h4>
+                <p>
+                  <strong>Tratamiento:</strong>Medidas Generales. <span class="success-highlight">NO inmunosupresión.</span>
+                </p>
+              </div>
+              <div class="risk-level risk-moderate">
+                <h4>Riesgo MODERADO</h4>
+                <p>
+                  <strong>Tratamiento:</strong>
+                  <span class="highlight">1ª Línea: Rituximab.</span>
+                </p>
+              </div>
+              <div class="risk-level risk-high">
+            <h4>Riesgo ALTO / MUY ALTO</h4>
+            <p>
+              <strong>Tratamiento:</strong>
+              <span class="danger-highlight">Ciclofosfamida + Esteroides.</span>
+            </p>
+
+            <div class="image-placeholder" style="margin-top: 20px; border: none;">
+              <img src="https://i.imgur.com/oiS68dh.jpeg" alt="Esquema de la Pauta de Ponticelli para el tratamiento de la Nefropatía Membranosa.">
+              <p class="image-caption" style="font-weight: bold;">Ejemplo: Pauta de Ponticelli</p>
+            </div>
+            </div>
+            </div>
+          </div>
+        </section>
+        <section id="trasplante" class="view-section">
+          <div class="content-card">
+            <h2>NM y Trasplante Renal</h2>
+            <h3>NM Recurrente</h3>
+            <ul>
+              <li>
+                <strong>Factor de Riesgo:</strong>Títulos <span class="danger-highlight">elevados de anti-PLA2R</span>.
+              </li>
+            </ul>
+            <h3>NM De Novo</h3>
+            <ul>
+              <li>
+                <strong>Patogenia:</strong>Asociada a <span class="highlight">rechazo crónico mediado por anticuerpos</span>.
+              </li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const body = document.body;
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        const allViews = document.querySelectorAll('.view-section');
+        const mainContent = document.querySelector('.main-content');
+
+        function closeSidebar() {
+          sidebar.classList.remove('is-open');
+          body.classList.remove('sidebar-is-open');
+          menuToggle.innerHTML = '☰';
+        }
+
+        function openSidebar() {
+          sidebar.classList.add('is-open');
+          body.classList.add('sidebar-is-open');
+          menuToggle.innerHTML = '✕';
+        }
+        // LÓGICA PARA EL BOTÓN DE MENÚ
+        menuToggle.addEventListener('click', function(e) {
+          e.stopPropagation(); // Previene que el clic se propague al 'mainContent'
+          sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+        });
+        // LÓGICA PARA CERRAR AL HACER CLIC EN EL CONTENIDO PRINCIPAL
+        mainContent.addEventListener('click', function() {
+          if (sidebar.classList.contains('is-open')) {
+            closeSidebar();
+          }
+        });
+        // LÓGICA PARA CAMBIAR DE VISTA
+        function showView(targetId) {
+          allViews.forEach(view => view.classList.remove('is-visible'));
+          navLinks.forEach(link => link.classList.remove('active'));
+          const targetSection = document.querySelector(targetId);
+          const activeLink = document.querySelector(`.sidebar nav a[data-target="${targetId}"]`);
+          if (targetSection) {
+            targetSection.classList.add('is-visible');
+            mainContent.scrollTop = 0; // Vuelve al inicio del contenido
+          }
+          if (activeLink) {
+            activeLink.classList.add('active');
+          }
+          closeSidebar(); // Cierra el menú después de la selección
+        }
+        navLinks.forEach(link => {
+          link.addEventListener('click', function(e) {
+            e.preventDefault();
+            showView(this.getAttribute('data-target'));
+          });
+        });
+        // ESTADO INICIAL
+        const initialView = document.querySelector('#portada-container');
+        const initialLink = document.querySelector('a[data-target="#portada-container"]');
+        if (initialView) initialView.classList.add('is-visible');
+        if (initialLink) initialLink.classList.add('active');
+      });
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('epidemiologyChart').getContext('2d');
+
+        const imageSources = [
+            'https://i.imgur.com/cCuoFDV.png',
+            'https://i.imgur.com/oBnmDbs.png',
+            'https://i.imgur.com/phejYKZ.png'
+        ];
+
+        const images = [];
+        let imagesLoaded = 0;
+
+        imageSources.forEach((src, index) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = src;
+            images[index] = img;
+            img.onload = () => {
+                imagesLoaded++;
+                if (imagesLoaded === imageSources.length) {
+                    createChart();
+                }
+            };
+        });
+
+        function createChart() {
+            const labels = [['Causa de Sx. Nefrótico', 'en Adultos'], 'Sx. Nefrótico en > 60 años', 'Pediátrica'];
+            const customInfo = [
+                'Causa más común en adultos no diabéticos.',
+                'Predominio en hombres blancos > 40 años.',
+                'Usualmente causado por VHB.'
+            ];
+
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Prevalencia (%)',
+                    data: [37, 40, 7],
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
+                    borderColor: 'rgba(0, 0, 0, 0)',
+                    borderWidth: 0
+                }]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, ticks: { callback: value => value + '%' } },
+                        x: { ticks: { font: { size: 14, weight: 'bold' }, color: '#1a2a47' } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { footer: items => customInfo[items[0].dataIndex] },
+                            footerFont: { weight: 'normal', style: 'italic' },
+                            footerColor: '#eee',
+                            footerAlign: 'center',
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'customBarImages',
+                    // ===============================================================
+                    // AQUÍ ESTÁ EL CAMBIO CLAVE: de 'afterDraw' a 'afterDatasetDraw'
+                    // ===============================================================
+                    afterDatasetDraw: (chart, args, options) => {
+                        const {ctx} = chart;
+                        ctx.save();
+                        
+                        const meta = args.meta;
+
+                        meta.data.forEach((bar, index) => {
+                            const image = images[index];
+                            if (image && image.complete) {
+                                const aspectRatio = image.width / image.height;
+                                let imgWidth = bar.width * 0.9;
+                                let imgHeight = imgWidth / aspectRatio;
+
+                                if (imgHeight > bar.height) {
+                                    imgHeight = bar.height;
+                                    imgWidth = imgHeight * aspectRatio;
+                                }
+
+                                ctx.drawImage(
+                                    image,
+                                    bar.x - (imgWidth / 2),
+                                    bar.y,
+                                    imgWidth,
+                                    imgHeight
+                                );
+                            }
+                        });
+                        ctx.restore();
+                    }
+                }]
+            };
+            
+            new Chart(ctx, config);
+        }
+    });
+    </script>
+    </body>
+</html>
