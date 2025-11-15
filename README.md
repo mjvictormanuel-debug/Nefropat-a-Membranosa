@@ -1,2 +1,2 @@
-# Nefropat-a-Membranosa
+# Nefropatía Membranosa
 Página de exposición sobre Neuropatía Membranosa."
